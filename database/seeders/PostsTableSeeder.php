@@ -23,6 +23,6 @@ class PostsTableSeeder extends Seeder
             'user_id' => 1,
             'status' => 'draft',
         ]);*/
-        Post::factory(5)->create();
+        Post::factory(10)->create();
     }
 }

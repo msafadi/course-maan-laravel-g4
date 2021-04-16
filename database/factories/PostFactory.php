@@ -27,7 +27,7 @@ class PostFactory extends Factory
             'title' => $name,
             'slug' => Str::slug($name),
             'content' => $this->faker->randomHtml(),
-            'category_id' => 1,
+            'category_id' => 2,
             'user_id' => 1,
             'status' => 'draft',
         ];

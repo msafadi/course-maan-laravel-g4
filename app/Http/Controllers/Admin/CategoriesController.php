@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,27 @@ class CategoriesController extends Controller
     
     public function index()
     {
-        $categories = Category::all();
+        // SELECT * FROM categories
+        // LEFT JOIN categories as parent ON parent.id = categories.parent_id
+
+        $categories = Category::leftJoin('categories as parent', 'parent.id', '=', 'categories.parent_id')
+            //->leftJoin('posts', 'posts.category_id', '=', 'categories.id')
+            ->select([
+                'categories.*',
+                'parent.name as parent_name',
+                //DB::raw('(SELECT COUNT(*) FROM posts WHERE posts.category_id = categories.id) as posts_count'),
+            ])
+            ->selectRaw('(SELECT COUNT(*) FROM posts WHERE posts.category_id = categories.id) as posts_count')
+            ->orderBy('categories.parent_id', 'ASC')
+            ->orderBy('categories.name', 'ASC')
+            /*->groupBy([
+                'categories.id',
+                'categories.name',
+                'categories.parent_id',
+                'categories.created_at',
+                'parent_name',
+            ])*/
+            ->paginate();
 
         return view('admin.categories.index', [
             'categories' => $categories,
