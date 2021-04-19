@@ -18,6 +18,7 @@
                 <th>Title</th>
                 <th>Slug</th>
                 <th>Category</th>
+                <th>Tags</th>
                 <th>Status</th>
                 <th>User</th>
                 <th>Created At</th>
@@ -34,7 +35,12 @@
                 <td>{{ $post->id }}</td>
                 <td>{{ $post->title }}</td>
                 <td>{{ $post->slug }}</td>
-                <td>{{ $post->category_name }}</td>
+                <td>{{ $post->category->name }}</td>
+                <td>
+                @foreach($post->tags as $tag)
+                <span class="badge badge-info">{{ $tag->name }}</span>
+                @endforeach
+                </td>
                 <td>{{ $post->status }}</td>
                 <td>{{ $post->user_id }}</td>
                 <td>{{ $post->created_at }}</td>

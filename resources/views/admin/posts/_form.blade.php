@@ -60,5 +60,16 @@
     </div>
 </div>
 <div class="form-group">
+    <label for="">Tags</label>
+    <div>
+        @foreach ($tags as $tag)
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="tag[]" value="{{ $tag->id }}" @if(in_array($tag->id, $post_tags)) checked @endif>
+            <label class="form-check-label">{{ $tag->name }}</label>
+        </div>
+        @endforeach
+    </div>
+</div>
+<div class="form-group">
     <button type="submit" class="btn btn-primary">{{ $saveLabel }}</button>
 </div>

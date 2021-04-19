@@ -71,4 +71,32 @@ class Post extends Model
     {
         $builder->where('status', '=', $status);
     }
+
+    // Inverse of One-to-Many (Post belongs to only one category)
+    public function category()
+    {
+        return $this->belongsTo(
+            Category::class,    // Related Model 
+            'category_id',      // FK for the related in the current model
+            'id'                // PK in the related model
+        )->withDefault([
+            'name' => 'N/A'
+        ]);
+    }
+
+    // Many-to-Many (Post belong to many Tags)
+    public function tags()
+    {
+        return $this->belongsToMany(
+            Tag::class,     // Related model 
+            'post_tag',     // Pivot table
+            'post_id',      // FK in pivot table for current model
+            'tag_id',       // FK in pivot table for related model
+            'id',           // PK for current model
+            'id'            // PK for related model
+        )->withPivot([
+            'post_id', 'tag_id'
+        ])
+        ->as('details');
+    }
 }

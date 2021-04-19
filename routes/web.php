@@ -13,52 +13,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*
-GET
-POST
-PUT
-PATCH
-DELETE
-*/
-
-Route::get('/', function() {
+Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
 
 Route::group([
     'prefix' => '/admin',
     'namespace' => 'Admin',
     'as' => 'admin.',
+    'middleware' => ['auth'],
 ], function() {
 
     Route::group([
         'prefix' => '/categories',
-        //'namespace' => 'Admin',
         'as' => 'categories.',
     ], function() {
-
+        
         Route::get('/', 'CategoriesController@index')->name('index');
         Route::get('/create', 'CategoriesController@create')->name('create');
         Route::post('/', 'CategoriesController@store')->name('store');
         Route::get('/{id}', 'CategoriesController@edit')->name('edit');
         Route::put('/{id}', 'CategoriesController@update')->name('update');
         Route::delete('/{id}', 'CategoriesController@destroy')->name('destroy');
-
     });
+    
+    Route::get('/posts/trash', 'PostsController@trash')->name('posts.trash');
+    Route::put('/posts/{id}/restore', 'PostsController@restore')->name('posts.restore');
+    Route::delete('/posts/{id}/force-delete', 'PostsController@forceDelete')->name('posts.force-delete');
 
-    // Resource Route and Controller
-    Route::get('posts/trash', 'PostsController@trash')->name('posts.trash');
-    Route::put('posts/{id}/restore', 'PostsController@restore')->name('posts.restore');
-    Route::delete('posts/trash/{id}', 'PostsController@forceDelete')->name('posts.force-delete');
-
-    Route::resource('posts', 'PostsController')->names([
+    Route::get('/posts/{id}/download', 'PostsController@image')->name('posts.image');
+    Route::resource('/posts', 'PostsController')->names([
         //'index' => 'admin.posts.index',
-        //'show' => 'admin.posts.show',
+        //'show' => 'admin.posts.create',
     ]);
-
-    Route::get('posts/{id}/image', 'PostsController@image')->name('posts.image');
 
 });
 
-Route::get('articles', 'PostsController@index')->name('articles.index');
-Route::get('articles/{id}', 'PostsController@show')->name('articles.show');
+
+Route::get('/posts', 'PostsController@index')->name('posts');
+Route::get('/posts/{id}', 'PostsController@show')->name('posts.show');
+
+Route::get('/categories', 'CategoriesController@index')->name('categories');
+Route::get('/categories/{id}', 'CategoriesController@show')->name('categories.show');

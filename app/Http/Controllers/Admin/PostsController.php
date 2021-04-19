@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Scopes\PublishedScope;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -20,6 +22,11 @@ class PostsController extends Controller
         'image' => 'nullable|image|max:204800', //200KB
     ];
 
+    public function __construct()
+    {
+        //$this->middleware(['auth'])->only('index', 'edit');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,13 +37,16 @@ class PostsController extends Controller
         // SELECT posts.*, categories.name AS category_name
         // FROM posts LEFT JOIN categories ON categories.id = posts.category_id
 
-        $posts = Post::leftJoin('categories', 'categories.id', '=', 'posts.category_id')
+        $posts = Post::with('tags', 'category')
+            //->leftJoin('categories', 'categories.id', '=', 'posts.category_id')
             ->select([
                 'posts.*',
-                'categories.name as category_name'
+                //'categories.name as category_name'
             ])
             ->latest() // ->orderBy('created_at', 'DESC')
             ->paginate();
+
+        // Post::with('category')->latest()->paginate();
 
         return view('admin.posts.index', [
             'posts' => $posts,
@@ -53,6 +63,8 @@ class PostsController extends Controller
         return view('admin.posts.create', [
             'post' => new Post(),
             'categories' => Category::all(),
+            'tags' => Tag::all(),
+            'post_tags' => [],
         ]);
     }
 
@@ -81,7 +93,11 @@ class PostsController extends Controller
             'category_id' => $request->post('category_id'),
             'status' => $request->post('status'),
             'image' => $image_path,
+            'user_id' => Auth::user()->id, // Auth::id() // $request->user()->id
         ]);
+
+        $tags = $request->post('tag', []);
+        $post->tags()->attach($tags);
 
         return redirect()->route('admin.posts.index')->with('success', 'Post created.');
     }
@@ -109,9 +125,14 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Post::findOrFail($id);
+
+        $post_tags = $post->tags()->pluck('id')->toArray();
+
         return view('admin.posts.edit', [
             'post' => $post,
             'categories' => Category::all(),
+            'tags' => Tag::all(),
+            'post_tags' => $post_tags,
         ]);
     }
 
@@ -153,6 +174,9 @@ class PostsController extends Controller
             'image' => $image_path,
         ]);
 
+        $tags = $request->post('tag', []);
+        $post->tags()->sync($tags);
+
         if ($old_image && $old_image != $image_path) {
             Storage::disk('public')->delete($old_image);
         }
@@ -180,7 +204,7 @@ class PostsController extends Controller
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'category_id' => 'required|int|exists:categories,id',
+            'category_id' => 'nullable|int|exists:categories,id',
             'status' => 'required|in:draft,published',
             'image' => 'nullable|image|max:204800', //200KB
         ];

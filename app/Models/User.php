@@ -40,4 +40,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // One-to-One (User has one Profile)
+    public function profile()
+    {
+        return $this->hasOne(
+            Profile::class, // Related model
+            'user_id',      // FK for current model in the related model
+            'id'            // PK in the current model
+        )->withDefault();
+    }
 }

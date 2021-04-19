@@ -19,7 +19,7 @@ class CategoriesController extends Controller
         // SELECT * FROM categories
         // LEFT JOIN categories as parent ON parent.id = categories.parent_id
 
-        $categories = Category::leftJoin('categories as parent', 'parent.id', '=', 'categories.parent_id')
+        /*$categories = Category::leftJoin('categories as parent', 'parent.id', '=', 'categories.parent_id')
             //->leftJoin('posts', 'posts.category_id', '=', 'categories.id')
             ->select([
                 'categories.*',
@@ -36,7 +36,13 @@ class CategoriesController extends Controller
                 'categories.created_at',
                 'parent_name',
             ])*/
-            ->paginate();
+            //->paginate();
+
+        // with eager loading
+        // SELECT * FROM categories
+        // SELECT * FROM categories WHERE id IN (...)
+        $categories = Category::with('parent')->withCount('posts as posts_no')
+            ->withCount('children')->paginate();
 
         return view('admin.categories.index', [
             'categories' => $categories,
