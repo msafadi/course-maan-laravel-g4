@@ -33,7 +33,10 @@
                     <a class="dropdown-item" href="#">Settings</a>
                     <a class="dropdown-item" href="#">Activity Log</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="login.html">Logout</a>
+                    <a class="dropdown-item" href="#" onclick="document.getElementById('logoutform').submit()">Logout</a>
+                    <form action="{{ route('logout') }}" method="post" id="logoutform">
+                        @csrf
+                    </form>
                 </div>
             </li>
         </ul>

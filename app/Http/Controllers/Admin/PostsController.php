@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Scopes\PublishedScope;
@@ -24,7 +25,7 @@ class PostsController extends Controller
 
     public function __construct()
     {
-        //$this->middleware(['auth'])->only('index', 'edit');
+        $this->middleware(['password.confirm'])->only('edit');
     }
 
     /**
@@ -71,12 +72,12 @@ class PostsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PostRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $request->validate($this->validateRules());
+        //$request->validate($this->validateRules());
 
         $image_path = null;
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -143,9 +144,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
-        $request->validate($this->validateRules());
+        //$request->validate($this->validateRules());
 
         $post = Post::findOrFail($id);
 
