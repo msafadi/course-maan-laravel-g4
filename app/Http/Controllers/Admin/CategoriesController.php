@@ -16,6 +16,8 @@ class CategoriesController extends Controller
     
     public function index()
     {
+        $this->authorize('view-any', Category::class);
+
         // SELECT * FROM categories
         // LEFT JOIN categories as parent ON parent.id = categories.parent_id
 
@@ -52,6 +54,8 @@ class CategoriesController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Category::class);
+
         // SELECT * FROM categories
         // SELECT id, name FROM categories
 
@@ -63,6 +67,7 @@ class CategoriesController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class);
         //$request->name;
         //$request->input('name');
         //$request->get('name');
@@ -94,13 +99,15 @@ class CategoriesController extends Controller
             ->with('success', 'Category created!');
     }
 
-    public function edit($id)
+    public function edit(Category $category)
     {
         // SELECT * FROM categories WHERE id = $id
-        $category = Category::find($id);
+        /*$category = Category::find($id);
         if ($category == null) {
             abort(404);
-        }
+        }*/
+
+        $this->authorize('update', $category);
 
         $parents = Category::where('id', '<>', $id)->get();
 
@@ -110,10 +117,10 @@ class CategoriesController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
         $unique = new Unique('categories', 'name');
-        $unique->ignore($id);
+        $unique->ignore($category->id);
 
         $request->validate([
             'name' => [
@@ -136,7 +143,9 @@ class CategoriesController extends Controller
             'min' => 'قيمة الحقل صغيرة أكثر من اللازم',
         ]);
 
-        $category = Category::findOrFail($id);
+        //$category = Category::findOrFail($id);
+
+        $this->authorize('update', $category);
 
         $category->name = $request->post('name');
         $category->slug = Str::slug($request->post('name'));
@@ -149,17 +158,20 @@ class CategoriesController extends Controller
             ->with('success', 'Category updated!');
     }
 
-    public function destroy($id)
+    public function destroy(Category $category)
     {
         // Method 1
         //$category = Category::findOrFail($id);
-        //$category->delete();
+        
+        $this->authorize('delete', $category);
+        
+        $category->delete();
 
         // Method 2
         //Category::where('id', '=', $id)->delete();
 
         // Method 3
-        Category::destroy($id);
+        //Category::destroy($id);
 
         return redirect()
             ->route('admin.categories.index')

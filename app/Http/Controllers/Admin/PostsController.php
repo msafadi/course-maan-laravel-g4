@@ -10,6 +10,7 @@ use App\Models\Scopes\PublishedScope;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -26,6 +27,8 @@ class PostsController extends Controller
     public function __construct()
     {
         $this->middleware(['password.confirm'])->only('edit');
+
+        $this->authorizeResource(Post::class, 'post');
     }
 
     /**
@@ -61,6 +64,10 @@ class PostsController extends Controller
      */
     public function create()
     {
+        /*if (!Gate::allows('posts.create')) {
+            abort(403);
+        }*/
+
         return view('admin.posts.create', [
             'post' => new Post(),
             'categories' => Category::all(),
@@ -77,6 +84,9 @@ class PostsController extends Controller
      */
     public function store(PostRequest $request)
     {
+        /*if (!Gate::allows('posts.create')) {
+            abort(403);
+        }*/
         //$request->validate($this->validateRules());
 
         $image_path = null;
@@ -109,9 +119,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        $post = Post::findOrFail($id);
+        //$post = Post::findOrFail($id);
         return view('admin.posts.show', [
             'post' => $post,
         ]);
@@ -123,9 +133,12 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        $post = Post::findOrFail($id);
+        /*if (!Gate::allows('posts.update')) {
+            abort(403);
+        }*/
+        //$post = Post::findOrFail($id);
 
         $post_tags = $post->tags()->pluck('id')->toArray();
 
@@ -146,6 +159,9 @@ class PostsController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
+        /*if (!Gate::allows('posts.update')) {
+            abort(403);
+        }*/
         //$request->validate($this->validateRules());
 
         $post = Post::findOrFail($id);
@@ -193,6 +209,11 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
+        /*if (!Gate::allows('posts.delete')) {
+            abort(403);
+        }*/
+        //Gate::authorize('posts.delete');
+
         //Post::destroy($id);
         $post = Post::findOrFail($id); //
         $post->delete();
@@ -211,9 +232,9 @@ class PostsController extends Controller
         ];
     }
 
-    public function image($id)
+    public function image(Post $post)
     {
-        $post = Post::findOrFail($id);
+        $this->authorize('image', $post);
 
         $path = storage_path('app/public/' . $post->image);
         return response()->download($path, 'image.jpg');
@@ -221,6 +242,8 @@ class PostsController extends Controller
 
     public function trash()
     {
+        $this->authorize('trash', Post::class);
+
         $posts = Post::onlyTrashed()->paginate();
         return view('admin.posts.trash', [
             'posts' => $posts,
@@ -230,6 +253,9 @@ class PostsController extends Controller
     public function restore($id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
+        
+        $this->authorize('restore', $post);
+
         $post->restore(); // deleted_at = null
 
         return redirect()->route('admin.posts.index')->with('success', 'Post restored.');
@@ -238,6 +264,9 @@ class PostsController extends Controller
     public function forceDelete($id)
     {
         $post = Post::withTrashed()->findOrFail($id);
+
+        $this->authorize('force-delete', $post);
+
         $post->forceDelete();
 
         /*if ($post->image) {

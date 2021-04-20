@@ -38,11 +38,15 @@
                 <td>{{ $category->children_count }}</td>
                 <td>{{ $category->created_at }}</td>
                 <td><a href="{{ route('admin.categories.edit', [$category->id]) }}" class="btn btn-sm btn-outline-success">Edit</a></td>
-                <td><form action="{{ route('admin.categories.destroy', [$category->id]) }}" method="post">
+                <td>
+                @can('delete', $category)
+                <form action="{{ route('admin.categories.destroy', [$category->id]) }}" method="post">
                     @csrf
                     @method('delete')
                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form></td>
+                </form>
+                @endcan
+                </td>
             </tr>
             @endforeach
             @else

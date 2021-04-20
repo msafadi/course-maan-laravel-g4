@@ -39,16 +39,16 @@ Route::group([
         Route::get('/', 'CategoriesController@index')->name('index');
         Route::get('/create', 'CategoriesController@create')->name('create');
         Route::post('/', 'CategoriesController@store')->name('store');
-        Route::get('/{id}', 'CategoriesController@edit')->name('edit');
-        Route::put('/{id}', 'CategoriesController@update')->name('update');
-        Route::delete('/{id}', 'CategoriesController@destroy')->name('destroy');
+        Route::get('/{category}', 'CategoriesController@edit')->name('edit');
+        Route::put('/{category}', 'CategoriesController@update')->name('update');
+        Route::delete('/{category}', 'CategoriesController@destroy')->name('destroy');
     });
     
     Route::get('/posts/trash', 'PostsController@trash')->name('posts.trash');
     Route::put('/posts/{id}/restore', 'PostsController@restore')->name('posts.restore');
     Route::delete('/posts/{id}/force-delete', 'PostsController@forceDelete')->name('posts.force-delete');
 
-    Route::get('/posts/{id}/download', 'PostsController@image')->name('posts.image');
+    Route::get('/posts/{post}/download', 'PostsController@image')->name('posts.image');
     Route::resource('/posts', 'PostsController')->names([
         //'index' => 'admin.posts.index',
         //'show' => 'admin.posts.create',

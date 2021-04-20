@@ -41,6 +41,11 @@ return [
             'provider' => 'users',
         ],
 
+        'editor' => [
+            'driver' => 'session',
+            'provider' => 'editors',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -71,6 +76,11 @@ return [
             'model' => App\Models\User::class,
         ],
 
+        'editors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Editor::class,
+        ]
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -99,6 +109,13 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        'editors' => [
+            'provider' => 'editors',
+            'table' => 'editors_password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*
@@ -112,6 +129,6 @@ return [
     |
     */
 
-    'password_timeout' => 10800,
+    'password_timeout' => 10800, // 3 Hours
 
 ];

@@ -1,7 +1,9 @@
 <x-admin-layout title="Posts">
+    @can('posts.create')
     <div class="mb-4">
         <a href="{{ route('admin.posts.create') }}" class="btn btn-sm btn-outline-primary">Create New</a>
     </div>
+    @endif
 
     @if(session()->has('success'))
     <div class="alert alert-success">
@@ -44,12 +46,19 @@
                 <td>{{ $post->status }}</td>
                 <td>{{ $post->user_id }}</td>
                 <td>{{ $post->created_at }}</td>
-                <td><a href="{{ route('admin.posts.edit', [$post->id]) }}" class="btn btn-sm btn-outline-success">Edit</a></td>
-                <td><form action="{{ route('admin.posts.destroy', [$post->id]) }}" method="post">
+                <td>
+                @can('posts.update')
+                <a href="{{ route('admin.posts.edit', [$post->id]) }}" class="btn btn-sm btn-outline-success">Edit</a></td>
+                @endcan
+                <td>
+                @can('posts.delete')
+                <form action="{{ route('admin.posts.destroy', [$post->id]) }}" method="post">
                     @csrf
                     @method('delete')
                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form></td>
+                </form>
+                @endcan
+                </td>
             </tr>
             @empty
             <tr>

@@ -19,10 +19,11 @@ class DatabaseSeeder extends Seeder
         //User::factory(1)->create();
         //Category::factory(5)->create();
 
-        Tag::factory(10)->create();
+        //Tag::factory(10)->create();
 
-        /*$this->call([
-            PostsTableSeeder::class,
-        ]);*/
+        $this->call([
+            //PostsTableSeeder::class,
+            AbilitiesTableSeeder::class,
+        ]);
     }
 }

@@ -51,4 +51,12 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    // Guard : web, api
+    // Auth::guard('editor')->user()
+    // Auth::guard('editor')->id(),
+    // Auth::guard('editor')->attempt(['email' => $email, 'password' => $password], $remember)
+    // Auth::guard('editor')->check()
+    // Auth::guard('editor')->login($user)
+    // Auth::guard('editor')->logout()
 }

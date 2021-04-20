@@ -20,6 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'type',
+        'role_id',
     ];
 
     /**
@@ -49,5 +51,15 @@ class User extends Authenticatable implements MustVerifyEmail
             'user_id',      // FK for current model in the related model
             'id'            // PK in the current model
         )->withDefault();
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id')->withDefault();
+    }
+
+    public function hasAbility($ability)
+    {
+        return $this->role->abilities()->where('code', $ability)->exists();
     }
 }
