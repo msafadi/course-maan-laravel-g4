@@ -30,4 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'openweathermap' => [
+        'key' => '5b111e3737b3102908663fd62419fd0b',
+        'units' => 'metric',
+    ],
+
+    'nexmo' => [
+        'sms_from' => '15556666666',
+    ],
+
 ];

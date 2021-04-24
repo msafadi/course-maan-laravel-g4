@@ -157,7 +157,7 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostRequest $request, $id)
+    public function update(PostRequest $request, Post $post)
     {
         /*if (!Gate::allows('posts.update')) {
             abort(403);

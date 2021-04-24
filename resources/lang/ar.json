@@ -1,0 +1,15 @@
+{
+    "Posts": "المنشورات",
+    "ID": "الرقم",
+    "Title": "العنوان",
+    "Slug": "الاسم اللطيف",
+    "Category": "التصنيف",
+    "Tags": "الوسوم",
+    "User": "المستخدم",
+    "Created At": "وقت الإنشاء",
+    "Status": "الحالة",
+    "Edit": "تحرير",
+    "Delete": "حذف",
+    "Create New": "إنشاء جديد",
+    "There are :count of :total posts": "عرض :count من أصل :total منشور."
+}

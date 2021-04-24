@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ App::currentLocale() }}" dir="{{ App::isLocale('ar')? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8" />
@@ -8,7 +8,11 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>{{ config('app.name') }}</title>
+    @if(App::isLocale('ar'))
+    <link href="{{ asset('admin-assets/css/styles.rtl.css') }}" rel="stylesheet" />
+    @else
     <link href="{{ asset('admin-assets/css/styles.css') }}" rel="stylesheet" />
+    @endif
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 

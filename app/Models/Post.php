@@ -23,6 +23,14 @@ class Post extends Model
         'status', 'image',
     ];
 
+    protected $hidden = [
+        'deleted_at', 'image',
+    ];
+
+    protected $appends = [
+        'image_url'
+    ];
+
     // Attribute Accessors
 
     // $post->image_url
@@ -84,6 +92,12 @@ class Post extends Model
         ]);
     }
 
+    public function user()
+    {
+        // posts.user_id = users.id
+        return $this->belongsTo(User::class);
+    }
+
     // Many-to-Many (Post belong to many Tags)
     public function tags()
     {
@@ -96,7 +110,12 @@ class Post extends Model
             'id'            // PK for related model
         )->withPivot([
             'post_id', 'tag_id'
-        ])
-        ->as('details');
+        ]);
+        //->as('details');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

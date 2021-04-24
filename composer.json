@@ -10,7 +10,10 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5"
+        "laravel/nexmo-notification-channel": "^2.5",
+        "laravel/sanctum": "^2.10",
+        "laravel/tinker": "^2.5",
+        "nexmo/laravel": "^2.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -6,10 +6,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
     ];
 
     /**
@@ -61,5 +64,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasAbility($ability)
     {
         return $this->role->abilities()->where('code', $ability)->exists();
+    }
+
+    public function posts()
+    {
+        // posts.user_id = users.id
+        return $this->hasMany(Post::class);
+    }
+
+    public function routeNotificationForMail($notification = null)
+    {
+        return $this->email;
+    }
+
+    public function routeNotificationForNexmo($notification = null)
+    {
+        return $this->mobile;
     }
 }

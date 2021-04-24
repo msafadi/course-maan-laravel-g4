@@ -25,11 +25,17 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::group([
-    'prefix' => '/admin',
+    'prefix' => '{locale}/admin',
     'namespace' => 'Admin',
     'as' => 'admin.',
-    'middleware' => ['auth', 'user.type:admin,super-admin'],
+    'middleware' => ['auth', 'user.type:admin,super-admin', 'locale'],
+    'where' => [
+        'locale' => 'ar|en|fr',
+        'id' => '[0-9]+'
+    ]
 ], function() {
+
+    Route::get('/', 'DashboardController@index')->name('dashboard');
 
     Route::group([
         'prefix' => '/categories',
@@ -59,6 +65,12 @@ Route::group([
 
 Route::get('/posts', 'PostsController@index')->name('posts');
 Route::get('/posts/{id}', 'PostsController@show')->name('posts.show');
+Route::post('/posts/{post}/comments', 'CommentsController@store')->name('comments.store');
 
 Route::get('/categories', 'CategoriesController@index')->name('categories');
 Route::get('/categories/{id}', 'CategoriesController@show')->name('categories.show');
+
+Route::get('/notifications', 'NotificationsController@index')->name('notifications')
+    ->middleware('auth');
+Route::get('/notifications/{id}', 'NotificationsController@read')->name('notifications.read')
+    ->middleware('auth');

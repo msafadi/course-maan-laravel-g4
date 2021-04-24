@@ -14,6 +14,10 @@ class Tag extends Model
         'name', 'slug'
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
+
     public static function booted()
     {
         static::creating(function(Tag $tag) {

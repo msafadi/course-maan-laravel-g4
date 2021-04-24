@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// /api/posts
+Route::apiResource('posts', 'Api\PostsController');
+Route::apiResource('tags', 'Api\TagsController');
+
+Route::post('login', 'Api\LoginController@login');
+Route::post('logout', 'Api\LoginController@logout')->middleware('auth:sanctum');
+
+Route::get('user/tokens', 'Api\LoginController@tokens')->middleware('auth:sanctum');

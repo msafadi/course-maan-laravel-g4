@@ -1,7 +1,7 @@
-<x-admin-layout title="Posts">
+<x-admin-layout :title="__('Posts')">
     @can('posts.create')
     <div class="mb-4">
-        <a href="{{ route('admin.posts.create') }}" class="btn btn-sm btn-outline-primary">Create New</a>
+        <a href="{{ route('admin.posts.create') }}" class="btn btn-sm btn-outline-primary">{{ __('Create New') }}</a>
     </div>
     @endif
 
@@ -11,19 +11,20 @@
         {{-- session('success') --}}
     </div>
     @endif
-
+    
+    <p>{{ __('There are :count of :total posts', ['total' => $posts->total(), 'count' => $posts->count()]) }}</p>
     <table class="table">
         <thead>
             <tr>
                 <th></th>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Slug</th>
-                <th>Category</th>
-                <th>Tags</th>
-                <th>Status</th>
-                <th>User</th>
-                <th>Created At</th>
+                <th>@lang('ID')</th>
+                <th>@lang('Title')</th>
+                <th>{{ trans('Slug') }}</th>
+                <th>{{ __('Category') }}</th>
+                <th>{{ __('Tags') }}</th>
+                <th>{{ Lang::get('Status') }}</th>
+                <th>{{ __('User') }}</th>
+                <th>{{ __('Created At') }}</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -48,14 +49,14 @@
                 <td>{{ $post->created_at }}</td>
                 <td>
                 @can('posts.update')
-                <a href="{{ route('admin.posts.edit', [$post->id]) }}" class="btn btn-sm btn-outline-success">Edit</a></td>
+                <a href="{{ route('admin.posts.edit', [$post->id]) }}" class="btn btn-sm btn-outline-success">{{ __('Edit') }}</a></td>
                 @endcan
                 <td>
                 @can('posts.delete')
                 <form action="{{ route('admin.posts.destroy', [$post->id]) }}" method="post">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">{{ __('Delete') }}</button>
                 </form>
                 @endcan
                 </td>

@@ -13,7 +13,7 @@
     <article>
         <h3>{{ $post->category->name }} - {{ $post->title }}</h3>
         <p>{{ $post->content }}</p>
-        <a href="{{ route('articles.show', [$post->id]) }}">Read more</a>
+        <a href="{{ route('posts.show', [$post->id]) }}">Read more</a>
     </article>
     <hr>
     @endforeach
