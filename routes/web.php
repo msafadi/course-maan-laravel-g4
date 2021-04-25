@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckUserType;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,3 +75,16 @@ Route::get('/notifications', 'NotificationsController@index')->name('notificatio
     ->middleware('auth');
 Route::get('/notifications/{id}', 'NotificationsController@read')->name('notifications.read')
     ->middleware('auth');
+
+if (App::environment('production')) {
+    Route::get('/storage/{file}', function($file) {
+
+        $path = storage_path('app/public/' . $file);
+        if (!is_file($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
+
+    })->where('file', '.+');
+}

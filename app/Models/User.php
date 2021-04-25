@@ -81,4 +81,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->mobile;
     }
+
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'User.Notifications.' . $this->id;
+    }
 }

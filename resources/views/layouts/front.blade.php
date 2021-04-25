@@ -11,4 +11,9 @@
     <div class="container my-5">
         {{ $slot }}
     </div>
+
+    <script>
+        const userId = "{{ Auth::id() }}";
+    </script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>

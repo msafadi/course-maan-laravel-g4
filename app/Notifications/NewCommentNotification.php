@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\NexmoMessage;
@@ -35,7 +36,7 @@ class NewCommentNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database', 'nexmo'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -76,6 +77,23 @@ class NewCommentNotification extends Notification
         return (new NexmoMessage)->content(__('new comment on your post ":title"', [
             'title' => $this->comment->post->title,
         ]));
+    }
+
+    // Cahnnel Types: Public, Private, Presence
+    // Default Channel: (Private) App.Models.User.{id}
+    // Event Name: 
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'title' => __('New Comment'),
+            'body' => __(':name has commented on your post ":title"', [
+                'name' => $this->comment->name,
+                'title' => $this->comment->post->title,
+            ]),
+            'action' =>route('posts.show', [$this->comment->post_id]),
+            'icon' => '',
+            'comment' => $this->comment,
+        ]);
     }
 
     /**
